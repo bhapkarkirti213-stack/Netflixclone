@@ -1,4 +1,6 @@
+import { useNavigate } from "react-router-dom";
 function SignIn() {
+    const navigate = useNavigate();
     return (
         <div className="signIn">
             <img
@@ -19,7 +21,7 @@ function SignIn() {
                 placeholder="Password"
             />
 
-            <button className="continue-btn">
+            <button className="continue-btn" onClick={() => navigate("/dashboard")}>
                 Continue
             </button>
         </div>

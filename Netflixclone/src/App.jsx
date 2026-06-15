@@ -13,6 +13,7 @@ import FAQ from "./components/FAQ";
 import SignIn from "./components/SignIn";
 
 import "./App.css";
+import Dashboard from "./components/Dashboard";
 
 
 
@@ -61,6 +62,7 @@ function App() {
       <Route path="/" element={<HomePage />} />
 
       <Route path="/signin" element={<SignIn />} />
+      <Route path="/dashboard" element={<Dashboard />} />
 
     </Routes>
 
