@@ -1,4 +1,6 @@
 import MovieRow from "./MovieRow";
+import DashboardNavbar from "./DashboardNavbar";
+import CategoryPills from "./CategoryPills";
 import { useState, useEffect } from "react";
 
 function Dashboard() {
@@ -7,6 +9,7 @@ function Dashboard() {
     const [currentMovie, setCurrentMovie] = useState(0);
     const [searchTerm, setSearchTerm] = useState("");
     const [myList, setMyList] = useState([]);
+    const [category, setCategory] = useState("All");
 
     useEffect(() => {
         fetch("https://api.tvmaze.com/shows")
@@ -50,17 +53,16 @@ function Dashboard() {
     };
 
     return (
+
         <div className="dashboard">
 
-            {/* Search Bar */}
-            <div className="search-container">
-                <input
-                    type="text"
-                    placeholder="Search movies..."
-                    value={searchTerm}
-                    onChange={(e) => setSearchTerm(e.target.value)}
-                />
-            </div>
+            <DashboardNavbar />
+
+            <CategoryPills setCategory={setCategory} />
+
+            <h2 className="selected-category">
+                {category}
+            </h2>
 
             {/* Featured Banner */}
             {!searchTerm && (
@@ -72,22 +74,40 @@ function Dashboard() {
                                 key={shows[currentMovie].id}
                                 src={shows[currentMovie].image?.original}
                                 alt={shows[currentMovie].name}
+                                className="featured-image"
                             />
 
-                            <div className="banner-info">
+                            <div className="banner-overlay">
 
-                                <h1>
-                                    {shows[currentMovie].name}
-                                </h1>
+                                <div className="banner-info">
 
-                                <p>
-                                    {shows[currentMovie].summary
-                                        ?.replace(/<[^>]*>/g, "")
-                                        .slice(0, 150)}
-                                    ...
-                                </p>
+                                    <h1>
+                                        {shows[currentMovie].name}
+                                    </h1>
+
+                                    <p>
+                                        {shows[currentMovie].summary
+                                            ?.replace(/<[^>]*>/g, "")
+                                            .slice(0, 150)}
+                                        ...
+                                    </p>
+
+                                    <div className="banner-buttons">
+
+                                        <button className="play-btn">
+                                            ▶ Play
+                                        </button>
+
+                                        <button className="info-btn">
+                                            ℹ More Info
+                                        </button>
+
+                                    </div>
+
+                                </div>
 
                             </div>
+
                         </>
                     )}
 
@@ -147,6 +167,7 @@ function Dashboard() {
             )}
 
         </div>
+
     );
 }
 
