@@ -1,38 +1,40 @@
+import { auth } from "../firebase";
+import { signOut } from "firebase/auth";
+
 function DashboardNavbar() {
+
+    const user = auth.currentUser;
+
+    const logout = async () => {
+
+        await signOut(auth);
+
+        window.location.href = "/signin";
+    };
+
     return (
-        <div className="dashboard-nav">
+        <nav className="dashboard-navbar">
 
-            <img
-                src="/netflix-logo.png"
-                alt="Netflix"
-                className="dashboard-logo"
-            />
+            <h1 className="netflix-logo">
+                NETFLIX
+            </h1>
 
-            <div className="nav-links">
+            <div className="nav-right">
 
-                <span>Home</span>
+                <span className="user-email">
+                    👤 {user?.email}
+                </span>
 
-                <span>TV Shows</span>
-
-                <span>Movies</span>
-
-                <span>My List</span>
-
-            </div>
-
-            <div className="nav-icons">
-
-                <button className="nav-icon-btn">
-                    🔍
-                </button>
-
-                <button className="nav-icon-btn">
-                    👤
+                <button
+                    className="logout-btn"
+                    onClick={logout}
+                >
+                    Logout
                 </button>
 
             </div>
 
-        </div>
+        </nav>
     );
 }
 

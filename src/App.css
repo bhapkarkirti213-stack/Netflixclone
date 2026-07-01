@@ -434,6 +434,7 @@
 .featured-banner {
   position: 10;
   height: 70vh;
+
   /* smaller than current */
   overflow: hidden;
 }
@@ -906,4 +907,34 @@
 .row-posters::-webkit-scrollbar {
   display: none;
   /* Chrome, Edge, Safari */
+}
+
+.auth-switch {
+  margin-top: 20px;
+  color: white;
+  text-align: center;
+}
+
+.auth-switch span {
+  color: #e50914;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.auth-switch span:hover {
+  text-decoration: underline;
+}
+
+.user-email {
+  color: white;
+  margin-left: 1200px;
+}
+
+.logout-btn {
+  background: #e50914;
+  border: none;
+  color: white;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
 }
