@@ -3,7 +3,8 @@ import { useNavigate } from "react-router-dom";
 
 import {
     signInWithEmailAndPassword,
-    createUserWithEmailAndPassword
+    createUserWithEmailAndPassword,
+    updateProfile
 } from "firebase/auth";
 
 import { auth } from "../firebase";
@@ -14,19 +15,25 @@ function SignIn() {
 
     const [isRegister, setIsRegister] = useState(false);
 
+    const [fullName, setFullName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
 
     const handleSubmit = async () => {
 
-        if (!email) {
-            alert("Please enter your email");
+        if (isRegister && !fullName.trim()) {
+            alert("Please enter your Full Name");
+            return;
+        }
+
+        if (!email.trim()) {
+            alert("Please enter your Email");
             return;
         }
 
         if (!password) {
-            alert("Please enter your password");
+            alert("Please enter your Password");
             return;
         }
 
@@ -35,22 +42,27 @@ function SignIn() {
             return;
         }
 
+        if (isRegister && password !== confirmPassword) {
+            alert("Passwords do not match");
+            return;
+        }
+
         try {
 
             if (isRegister) {
 
-                if (password !== confirmPassword) {
-                    alert("Passwords do not match");
-                    return;
-                }
+                const userCredential =
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
 
-                await createUserWithEmailAndPassword(
-                    auth,
-                    email,
-                    password
-                );
+                await updateProfile(userCredential.user, {
+                    displayName: fullName
+                });
 
-                alert("Account created successfully!");
+                alert("Account Created Successfully!");
 
             } else {
 
@@ -60,7 +72,7 @@ function SignIn() {
                     password
                 );
 
-                alert("Login successful!");
+                alert("Login Successful!");
 
             }
 
@@ -68,8 +80,35 @@ function SignIn() {
 
         } catch (error) {
 
-            alert(error.message);
+            switch (error.code) {
 
+                case "auth/email-already-in-use":
+                    alert("Email is already registered.");
+                    break;
+
+                case "auth/invalid-email":
+                    alert("Invalid Email Address.");
+                    break;
+
+                case "auth/user-not-found":
+                    alert("No account found with this email.");
+                    break;
+
+                case "auth/wrong-password":
+                    alert("Incorrect Password.");
+                    break;
+
+                case "auth/invalid-credential":
+                    alert("Invalid Email or Password.");
+                    break;
+
+                case "auth/weak-password":
+                    alert("Password should be at least 6 characters.");
+                    break;
+
+                default:
+                    alert(error.message);
+            }
         }
     };
 
@@ -86,6 +125,19 @@ function SignIn() {
             <h1>
                 {isRegister ? "Create Account" : "Sign In"}
             </h1>
+
+            {isRegister && (
+
+                <input
+                    type="text"
+                    placeholder="Full Name"
+                    value={fullName}
+                    onChange={(e) =>
+                        setFullName(e.target.value)
+                    }
+                />
+
+            )}
 
             <input
                 type="email"
@@ -122,7 +174,7 @@ function SignIn() {
                 className="continue-btn"
                 onClick={handleSubmit}
             >
-                {isRegister ? "Register" : "Continue"}
+                {isRegister ? "Register" : "Sign In"}
             </button>
 
             <p className="auth-switch">
@@ -135,6 +187,11 @@ function SignIn() {
                     onClick={() =>
                         setIsRegister(!isRegister)
                     }
+                    style={{
+                        color: "#E50914",
+                        cursor: "pointer",
+                        fontWeight: "bold"
+                    }}
                 >
                     {isRegister
                         ? " Sign In"
